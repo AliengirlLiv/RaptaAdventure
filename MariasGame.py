@@ -5,13 +5,14 @@ from firebase import firebase
 firebase = firebase.FirebaseApplication('https://mariasadventure-b810c.firebaseio.com')
 currMission = None
 currMissionIndex = -1
+STORY_INDEX = 2
 
 
 def getCurrMission():
+	global currMissionIndex
+	global currMission
 	currMissionIndex = firebase.get('/','missionIndex')
 	currMission = firebase.get('/missionSegments', currMissionIndex)
-	global currMission = currMission
-	global currMissionIndex = currMissionIndex
 	if currMission != None:
 		print('')
 		print("MISSION " + str(currMissionIndex) + ": " + currMission['title'])
@@ -20,7 +21,8 @@ def getCurrMission():
 		print("")
 		print(currMission['mission'])
 	else:
-		print("Looks like you don't have any missions yet.  Don't worry, it won't be that way for long!  With Rapta, action's always around the corner.")
+		print('')
+		print("Looks like you don't have any new missions yet.  Don't worry, it won't be that way for long!  With Rapta, action's always around the corner.")
 
 
 def help():
@@ -29,6 +31,8 @@ def help():
 	print("help(): If you're here, presumably you already know what this one does.")
 	print('')
 	print("story(): Get the most recent segment of the story.")
+	print('')
+	print("fullStory(): Print all story segments.")
 	print('')
 	print("mission(): Get the most recent challenge.")
 	print('')
@@ -46,12 +50,29 @@ def story():
 		print(currMission['story'])
 		print('')
 
+
+
+#TODO:
+	# Fix fullStory()
+	# Make sure the level passing oworks fine
+	# Make print statements sound better
+	# Actually write story
+	# Comment code
+	# (If time) add Easter Egg
+
+	# Time frame: 1 hr
+
+
+#Got to be a better way to do this than get ALL of them
+# In normal firebase, you can shoose a limit on how many
 def fullStory():
 	allMissions = firebase.get('/', None)
 	del allMissions['missionIndex']
 	print('')
 	for mission in allMissions.values():
-		print(data['story'])
+		mission = mission[0]
+		if mission.
+		print(mission['story'])
 		print('')
 
 
@@ -67,14 +88,15 @@ def mission():
 
 def submit(submission):
 	if str(submission).strip() == currMission['answer']:
-		firebase.post('/missionIndex', currMissionIndex + 1)
 		# Increment currMissionIndex
+		firebase.post('/missionIndex', currMissionIndex + 1)
+		print('')
 		print('You got it!  We are one step closer to defeating (SOMEONE')
-		print("To get your next challenge, type 'mission()")
 		# Get next mission
+		getCurrMission()
 	else:
-		print("Your solution isn't correct :(  Make sure your answer is right, and is in the reqested format.")
-		print("Make sre there are no extra spaces, capitals, commas, etc.")
+		print("Your solution isn't correct :(")
+		print(" Make sure your answer is right and in the reqested format.")
 
 
 
